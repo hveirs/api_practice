@@ -1,0 +1,65 @@
+---
+title: "Ventura River discharge times"
+author: "Hailey Veirs"
+date: "2022-08-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dataRetrieval)
+library(here)
+library(metajam)
+```
+
+Get the Ventura river water discharge data
+
+```{r}
+# Use the dataRetrieval package, and use the readNWISdv
+ventura_site <- "11118500"
+parameter_cd <- "00060"
+start_date <- "2019-10-01"
+end_date <- "2020-10-05"
+
+data <- dataRetrieval::readNWISdv(siteNumbers = ventura_site, 
+                                  parameterCd = parameter_cd, 
+                                  startDate = start_date, 
+                                  endDate = end_date)
+```
+
+Graph the discharge vs time (x)
+
+```{r}
+discharge_graph <- ggplot(data, aes(x = Date, y = X_00060_00003)) +
+  geom_line() + 
+  labs(title = "Water Discharge over Time", 
+       y = "Water Discharge (cubic feet/second)", 
+       x = "Date")
+
+discharge_graph
+```
+
+### Exercise 2
+
+Use metajam to download online data
+
+```{r}
+# Save the website link
+link <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8"
+# and save the path
+path <- "~/R/EDS214_D3/api_practice"
+
+# download the data using metajam
+download_d1_data(link, path)
+```
+
+```{r}
+# Now read in the data using metajam
+data_metajam <- read_d1_files("doi_10.5063_F1CJ8BPH__household_language__csv")
+
+#extract and save the dataframe
+household_data <- data_metajam$data
+```
+
+
